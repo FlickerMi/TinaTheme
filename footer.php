@@ -1,10 +1,12 @@
 <footer class="footer flex">
-    <section class="container">
+    <section class="container footer-content">
         <?php if ($this->options->FooterHTML): ?>
+        <div class="footer-custom-html">
             <?php $this->options->FooterHTML() ?>
+        </div>
         <?php endif; ?>
         <nav class="footer-links">
-            <p><center>Theme <a href="https://fmcf.cc" target="_blank">TinaTheme</a> By Magneto</center></p>
+            <p>Theme: <a href="https://fmcf.cc" target="_blank">TinaTheme</a> By Magneto</p>
         </nav>
     </section>
     <!--KaTeX-->

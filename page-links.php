@@ -37,7 +37,8 @@
         </div>
             <div class="linkpage">
                 <ul id="friendsList">
-                  <?php Links(); ?>
+                  <!-- <?php Links(); ?> -->
+                  <?php Links_Plugin::output("SHOW_MIX"); ?>
                 </ul>
             </div>
     </div>
