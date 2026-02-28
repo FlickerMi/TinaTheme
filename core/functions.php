@@ -215,8 +215,17 @@ function prev_post($archive) {
             ->order('table.contents.created', Typecho_Db::SORT_DESC)
             ->limit(1));
     if ($content) {
-        $content = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($content);
-        echo '<a rel="next" href="' . $content['permalink'] . '" title="' . $content['title'] . '"><span>Previous</span>' . $content['title'] . '</a>';
+        $category = $db->fetchRow($db->select('table.metas.slug')
+            ->from('table.metas')
+            ->join('table.relationships', 'table.metas.mid = table.relationships.mid')
+            ->where('table.relationships.cid = ?', $content['cid'])
+            ->where('table.metas.type = ?', 'category')
+            ->limit(1));
+        if ($category) {
+            $content['category'] = $category['slug'];
+        }
+        $permalink = Typecho_Router::url($content['type'], $content, Helper::options()->index);
+        echo '<a rel="prev" href="' . $permalink . '" title="' . $content['title'] . '"><span>Previous</span>' . $content['title'] . '</a>';
     }
     else {
         echo '';
@@ -234,8 +243,17 @@ function next_post($archive) {
             ->order('table.contents.created', Typecho_Db::SORT_ASC)
             ->limit(1));
     if ($content) {
-        $content = Typecho_Widget::widget('Widget_Abstract_Contents')->filter($content);
-        echo '<a rel="next" href="' . $content['permalink'] . '" title="' . $content['title'] . '"><span>Next</span>' . $content['title'] . '</a>';
+        $category = $db->fetchRow($db->select('table.metas.slug')
+            ->from('table.metas')
+            ->join('table.relationships', 'table.metas.mid = table.relationships.mid')
+            ->where('table.relationships.cid = ?', $content['cid'])
+            ->where('table.metas.type = ?', 'category')
+            ->limit(1));
+        if ($category) {
+            $content['category'] = $category['slug'];
+        }
+        $permalink = Typecho_Router::url($content['type'], $content, Helper::options()->index);
+        echo '<a rel="next" href="' . $permalink . '" title="' . $content['title'] . '"><span>Next</span>' . $content['title'] . '</a>';
     }
     else {
         echo '';
