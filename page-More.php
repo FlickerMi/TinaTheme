@@ -28,6 +28,7 @@ $this->need('header.php');
                 text-decoration: none;
                 display: block;
                 height: 100%;
+                box-shadow: none;
             }
             .case-item {
                 background: var(--light-background);
