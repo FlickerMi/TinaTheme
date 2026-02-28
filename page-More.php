@@ -30,6 +30,9 @@ $this->need('header.php');
                 height: 100%;
                 box-shadow: none;
             }
+            .more-r a:hover {
+                box-shadow: none;
+            }
             .case-item {
                 background: var(--light-background);
                 border-radius: 8px;
