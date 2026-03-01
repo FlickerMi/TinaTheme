@@ -14,6 +14,27 @@ if ($tags != null && strpos(json_encode($tags), 'gray')) {
 </style>
 <?php } ?>
 
+<?php
+// JSON-LD 结构化数据（Article schema）
+$jsonld = array(
+    '@context'      => 'https://schema.org',
+    '@type'         => 'Article',
+    'headline'      => $this->title,
+    'url'           => $this->permalink,
+    'datePublished' => date('c', $this->created),
+    'dateModified'  => date('c', $this->modified),
+    'author'        => array(
+        '@type' => 'Person',
+        'name'  => $this->author->name,
+    ),
+    'publisher'     => array(
+        '@type' => 'Organization',
+        'name'  => $this->options->title,
+    ),
+);
+?>
+<script type="application/ld+json"><?php echo json_encode($jsonld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?></script>
+
 <main>
     <div class="container">
         <article>
@@ -23,15 +44,13 @@ if ($tags != null && strpos(json_encode($tags), 'gray')) {
                         <h1><?php $this->title() ?></h1>
                         <div class="post-meta">
                             <div>
-                            <a>
+                            <span>
                                 By <a href="<?php $this->author->permalink(); ?>"><?php $this->author(); ?></a>
-                            </a> |
-                            <a>
-                                <time><?php $this->date('M j, Y'); ?></time> |
-                            </a>
-                            <a>
+                            </span> |
+                            <time datetime="<?php echo date('c', $this->created); ?>"><?php $this->date('M j, Y'); ?></time> |
+                            <span>
                                 <?php _e('Category: '); ?><?php $this->category(','); ?>
-                            </a>
+                            </span>
                             <?php if ($this->options->WordCount): ?>
                             <time> | 共 <?php echo word_count($this->cid); ?> 个字符</time>
                             <?php endif; ?>

@@ -3,8 +3,8 @@
 <main>
     <header>
         <div class="container">
-            <h1>作者</h1>
-            <p class="subtitle">这是<span class="count"><?php $this->archiveTitle(array('author' => _t('%s'),), ''); ?></span>所撰写所有的文章。</p>
+            <h1>作者：<span class="count"><?php $this->archiveTitle(array('author' => _t('%s')), ''); ?></span></h1>
+            <p class="subtitle">发布的全部文章</p>
         </div>
     </header>
     <section>
@@ -17,7 +17,7 @@
                             <a href="<?php $this->permalink() ?>">
                                 <div class="post-row">
                                     <time><?php $this->date('M j'); ?></time>
-                                    <h3><?php $this->title() ?></h3>
+                                    <h2><?php $this->title() ?></h2>
                                 </div>
                             </a>
                         </div>

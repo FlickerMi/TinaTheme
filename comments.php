@@ -47,7 +47,7 @@ echo $commentClass;
     <?php $this->comments()->to($comments); ?>
     <?php if($this->allow('comment')): ?>
     <div id="<?php $this->respondId(); ?>" class="respond">
-    	<h4 class="article-post"><?php _e('添加新评论'); ?> <small><?php $comments->cancelReply(); ?></small></h4>
+    	<div class="article-post comments-heading"><?php _e('添加新评论'); ?> <small><?php $comments->cancelReply(); ?></small></div>
     	<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" class="comment-form" role="form">
             <?php if($this->user->hasLogin()): ?>
     		<p><?php _e('登录身份: '); ?><a href="<?php $this->options->profileUrl(); ?>"><?php $this->user->screenName(); ?></a>. <a href="<?php $this->options->logoutUrl(); ?>" title="Logout" no-pjax><?php _e('退出'); ?> &raquo;</a></p>
@@ -86,7 +86,7 @@ echo $commentClass;
     </div>
     <br>
     <?php if ($comments->have()): ?>
-	<h4 class="comments-title-article-post"><?php $this->commentsNum(_t('暂无评论'), _t('仅有一条评论'), _t('已有 %d 条评论')); ?></h4>
+	<div class="comments-title-article-post comments-heading"><?php $this->commentsNum(_t('暂无评论'), _t('仅有一条评论'), _t('已有 %d 条评论')); ?></div>
     <?php $comments->listComments(); ?>
     <?php $comments->pageNav('&laquo; 前一页', '后一页 &raquo;'); ?>
     <?php endif; ?>

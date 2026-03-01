@@ -1,27 +1,99 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html lang="zh-CN">
 <head>
     <meta charset="<?php $this->options->charset(); ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title><?php $this->archiveTitle(array(
-            'category'  =>  _t('分类 %s 下的文章'),
-            'search'    =>  _t('包含关键字 %s 的文章'),
-            'tag'       =>  _t('标签 %s 下的文章'),
-            'author'    =>  _t('%s 发布的文章')
-        ), '', ' - '); ?><?php $this->options->title(); ?></title>
-    
+
+    <?php
+    /* ===== Title & Description & Canonical ===== */
+    $siteTitle = $this->options->title;
+    $siteUrl   = rtrim($this->options->siteUrl, '/');
+
+    if ($this->is('index')) {
+        // 首页：站名 | 站点描述（截取前 60 字符，避免过长）
+        $siteDesc = $this->options->description;
+        $titleTag = $siteDesc
+            ? $siteTitle . ' | ' . mb_strimwidth(strip_tags($siteDesc), 0, 60, '…', 'UTF-8')
+            : $siteTitle;
+        // description：站点描述（截取 160 字符以内）
+        $metaDesc = mb_strimwidth(strip_tags($siteDesc), 0, 160, '…', 'UTF-8');
+        $canonicalUrl = $siteUrl . '/';
+        $ogType = 'website';
+    } elseif ($this->is('single')) {
+        // 文章/独立页：页面标题 | 站名
+        $titleTag = $this->title . ' | ' . $siteTitle;
+        // description：优先使用摘要，否则截取正文前 160 字符
+        $rawDesc = $this->excerpt ? $this->excerpt : $this->content;
+        $metaDesc = mb_strimwidth(strip_tags($rawDesc), 0, 160, '…', 'UTF-8');
+        $canonicalUrl = $this->permalink;
+        $ogType = 'article';
+    } else {
+        // 归档页（分类、标签、作者、搜索）
+        // 归档页 description
+        $metaDescArr = array(
+            'category' => _t('分类 %s 下的全部文章'),
+            'search'   => _t('包含关键字 %s 的全部文章'),
+            'tag'      => _t('标签 %s 下的全部文章'),
+            'author'   => _t('%s 发布的全部文章'),
+        );
+        $metaDesc = $siteTitle;
+        foreach ($metaDescArr as $type => $tpl) {
+            if ($this->is($type)) {
+                ob_start();
+                $this->archiveTitle(array($type => '%s'), '', '');
+                $archiveName = ob_get_clean();
+                $metaDesc = sprintf($tpl, $archiveName);
+                break;
+            }
+        }
+        $metaDesc = mb_strimwidth($metaDesc, 0, 160, '…', 'UTF-8');
+        // canonical 使用当前请求 URL（去除多余参数）
+        $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
+        $canonicalUrl = rtrim($siteUrl, '/') . strtok($currentPath, '?');
+        $ogType = 'website';
+    }
+    ?>
+
+    <title><?php
+    if ($this->is('index')) {
+        echo htmlspecialchars($titleTag);
+    } elseif ($this->is('single')) {
+        echo htmlspecialchars($titleTag);
+    } else {
+        $this->archiveTitle(array(
+            'category'  => _t('分类 %s'),
+            'search'    => _t('搜索：%s'),
+            'tag'       => _t('标签 %s'),
+            'author'    => _t('%s 的文章'),
+        ), '', ' | ');
+        echo htmlspecialchars($siteTitle);
+    }
+    ?></title>
+
+    <?php if ($metaDesc): ?>
+    <meta name="description" content="<?php echo htmlspecialchars($metaDesc); ?>">
+    <?php endif; ?>
+
+    <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl); ?>">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="<?php echo $ogType; ?>">
+    <meta property="og:site_name" content="<?php echo htmlspecialchars($siteTitle); ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($this->is('single') ? $this->title : $siteTitle); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($metaDesc); ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($canonicalUrl); ?>">
+
+    <?php if ($this->options->SEOOPEN): ?>
     <?php if ($this->is('index')): ?>
-        <?php if ($this->options->SEOOPEN): ?>
-        <?php $this->header(); ?>
-        <?php endif; ?>
+    <?php $this->header(); ?>
     <?php else: ?>
-        <?php if ($this->options->SEOOPEN): ?>
-        <?php $this->header('xmlrpc=&wlw=&commentReply=&antiSpam=&atom'); ?>
-        <?php endif; ?>
-        <?php endif; ?>
+    <?php $this->header('xmlrpc=&wlw=&commentReply=&antiSpam=&atom'); ?>
+    <?php endif; ?>
+    <?php endif; ?>
+
     <?php if ($this->options->favicon): ?>
     <link rel="shortcut icon" type="image/x-icon" href="<?php $this->options->favicon() ?>">
     <?php endif; ?>
@@ -51,7 +123,7 @@
             <div>
                 <a class="brand" href="<?php $this->options->siteUrl(); ?>">
                     <?php if ($this->options->favicon): ?>
-                    <img src="<?php $this->options->favicon() ?>">
+                    <img src="<?php $this->options->favicon() ?>" alt="<?php echo htmlspecialchars($siteTitle); ?>">
                     <?php endif; ?>
                     &nbsp;&nbsp;<?php $this->options->title() ?>
                 </a>

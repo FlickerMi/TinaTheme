@@ -3,8 +3,8 @@
 <main>
     <header>
         <div class="container">
-            <h1>搜索</h1>
-            <p class="subtitle">包含关键字<span class="count"><?php $this->archiveTitle(array('search' =>  _t('%s')), ''); ?></span>的所有文章。</p>
+            <h1>搜索：<span class="count"><?php $this->archiveTitle(array('search' => _t('%s')), ''); ?></span></h1>
+            <p class="subtitle">包含该关键字的全部文章</p>
         </div>
     </header>
     <section>
@@ -20,7 +20,7 @@
                             <a href="<?php $this->permalink() ?>">
                                 <div class="post-row">
                                     <time><?php $this->date('M j'); ?></time>
-                                    <h3><?php $this->title() ?></h3>
+                                    <h2><?php $this->title() ?></h2>
                                 </div>
                             </a>
                         </div>

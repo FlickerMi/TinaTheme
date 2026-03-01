@@ -409,6 +409,15 @@ h4 {
   border-bottom: 2px solid var(--light-background);
   padding-bottom: 0.25rem;
 }
+.comments-heading {
+  font-size: 1.3rem;
+  color: var(--font-color);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--light-background);
+  padding-bottom: 0.25rem;
+  margin-top: 3rem;
+}
 h5 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
@@ -426,6 +435,10 @@ h5 {
     font-weight: 600;
   }
   h4 {
+    font-weight: 400;
+    font-size: 1.4rem;
+  }
+  .comments-heading {
     font-weight: 400;
     font-size: 1.4rem;
   }
