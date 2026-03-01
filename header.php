@@ -57,14 +57,22 @@
                 </a>
             </div>
             <div class="flex">
-                <?php if ($this->options->alink): ?>
-                    <a href="<?php $this->options->alink() ?>">
-                        <?php if ($this->options->alink_name): ?>
-                            <?php $this->options->alink_name() ?>
-                        <?php endif; ?>
-                    </a>
-                <?php endif; ?>
-                <?php if ($this->options->articles): ?><a href="<?php $this->options->articles() ?>">Articles</a><?php endif; ?>
+                <?php
+                $nav_raw = $this->options->nav_links;
+                if ($nav_raw) {
+                    $nav_lines = preg_split('/\r\n|\r|\n/', trim($nav_raw));
+                    foreach ($nav_lines as $nav_line) {
+                        $nav_line = trim($nav_line);
+                        if (empty($nav_line)) continue;
+                        $nav_parts = array_map('trim', explode('|', $nav_line, 2));
+                        $nav_name = isset($nav_parts[0]) ? $nav_parts[0] : '';
+                        $nav_url  = isset($nav_parts[1]) ? $nav_parts[1] : '#';
+                        if (empty($nav_name)) continue;
+                        echo '<a href="' . htmlspecialchars($nav_url) . '">' . htmlspecialchars($nav_name) . '</a>' . "\n";
+                    }
+                }
+                ?>
+
                 <?php if ($this->options->The_Dark_Mode): ?>
                 <button id="dark-mode-button">
                     <svg class="light" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="-ms-transform:rotate(360deg);-webkit-transform:rotate(360deg);transform:rotate(360deg)" viewBox="0 0 36 36"><path fill="#ffd983" d="M30.312.776C32 19 20 32 .776 30.312c8.199 7.717 21.091 7.588 29.107-.429C37.9 21.867 38.03 8.975 30.312.776z"></path><path d="M30.705 15.915a1.163 1.163.0 101.643 1.641 1.163 1.163.0 00-1.643-1.641zm-16.022 14.38a1.74 1.74.0 000 2.465 1.742 1.742.0 100-2.465zm13.968-2.147a2.904 2.904.0 01-4.108.0 2.902 2.902.0 010-4.107 2.902 2.902.0 014.108.0 2.902 2.902.0 010 4.107z" fill="#ffcc4d"></path><rect x="0" y="0" width="36" height="36" fill="rgba(0, 0, 0, 0)"></rect></svg>
