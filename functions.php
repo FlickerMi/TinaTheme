@@ -7,9 +7,9 @@ require_once __DIR__ . '/core/functions.php';
 function themeConfig($form) {
     require_once __DIR__ . '/core/backup.php';
     /* 外观 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>基础外观</h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeAppearance = new Typecho_Widget_Helper_Form_Element_Text('NoticeAppearance', NULL, NULL, _t('<h2>基础外观</h2>'));
+    $NoticeAppearance->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeAppearance);
     
     $favicon = new Typecho_Widget_Helper_Form_Element_Text('favicon', NULL, '/usr/themes/TinaTheme/assets/favicon.ico', _t('Favicon 图标'), _t('在这里填入一个图片 URL 地址, 以添加一个 Favicon，留空则不单独设置 Favicon，主题默认 Favicon 地址为 /usr/themes/TinaTheme/assets/favicon.ico'));
 	$form->addInput($favicon);
@@ -30,9 +30,9 @@ function themeConfig($form) {
     $form->addInput($cursor);
     
      /* Notice */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>内容设置 <small>Contents</small></h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeContent = new Typecho_Widget_Helper_Form_Element_Text('NoticeContent', NULL, NULL, _t('<h2>内容设置 <small>Contents</small></h2>'));
+    $NoticeContent->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeContent);
     
     $Notice = new Typecho_Widget_Helper_Form_Element_Textarea('Notice', NULL, NULL, _t('网站首页公告'), _t('支持HTML语法，但不建议使用HTML语法。不填则代表为默认内容。'));
     $form->addInput($Notice);
@@ -41,9 +41,9 @@ function themeConfig($form) {
     $form->addInput($FooterHTML);
     
     /* 速度优化 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>速度优化</h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeSpeed = new Typecho_Widget_Helper_Form_Element_Text('NoticeSpeed', NULL, NULL, _t('<h2>速度优化</h2>'));
+    $NoticeSpeed->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeSpeed);
     
     $compressHtml = new Typecho_Widget_Helper_Form_Element_Radio(
         'compressHtml',
@@ -92,9 +92,9 @@ function themeConfig($form) {
     $form->addInput($cjCDNlink);
     
     /* 网站功能 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>网站功能</h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeFeature = new Typecho_Widget_Helper_Form_Element_Text('NoticeFeature', NULL, NULL, _t('<h2>网站功能</h2>'));
+    $NoticeFeature->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeFeature);
     
     $JqueryControl = new Typecho_Widget_Helper_Form_Element_Radio(
         'JqueryControl',
@@ -170,9 +170,9 @@ function themeConfig($form) {
     $form->addInput($MathRender);
     
     /* 评论 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>评论 <small>Comments</small></h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeComment = new Typecho_Widget_Helper_Form_Element_Text('NoticeComment', NULL, NULL, _t('<h2>评论 <small>Comments</small></h2>'));
+    $NoticeComment->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeComment);
     
     $TheComments = new Typecho_Widget_Helper_Form_Element_Radio(
         'TheComments',
@@ -199,9 +199,9 @@ function themeConfig($form) {
     $form->addInput($TheVerification);
     
     /* 深色模式 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>深色模式 <small>Dark Mode</small></h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeDarkMode = new Typecho_Widget_Helper_Form_Element_Text('NoticeDarkMode', NULL, NULL, _t('<h2>深色模式 <small>Dark Mode</small></h2>'));
+    $NoticeDarkMode->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeDarkMode);
     
     $The_Dark_Mode = new Typecho_Widget_Helper_Form_Element_Radio(
         'The_Dark_Mode',
@@ -216,9 +216,9 @@ function themeConfig($form) {
     $form->addInput($The_Dark_Mode);
     
 	/* 图标 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>图标 <small>Icon</small></h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeIcon = new Typecho_Widget_Helper_Form_Element_Text('NoticeIcon', NULL, NULL, _t('<h2>图标 <small>Icon</small></h2>'));
+    $NoticeIcon->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeIcon);
     
     $Icons = new Typecho_Widget_Helper_Form_Element_Radio(
         'Icons',
@@ -232,13 +232,13 @@ function themeConfig($form) {
     );
     $form->addInput($Icons);
 
-	$icons_data = new Typecho_Widget_Helper_Form_Element_Textarea('icons_data', NULL, NULL, _t('图标列表'), _t('每行一个图标，格式：<code>SVG代码 | 链接URL</code>。SVG 推荐大小 25x25，链接留空可填 <code>#</code>。示例：<br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://github.com/xxx</code><br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://twitter.com/xxx</code>'));
+	$icons_data = new Typecho_Widget_Helper_Form_Element_Textarea('icons_data', NULL, '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github-icon lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> | https://github.com/FlickerMi', _t('图标列表'), _t('每行一个图标，格式：<code>SVG代码 | 链接URL</code>。SVG 推荐大小 25x25，链接留空可填 <code>#</code>。示例：<br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://github.com/xxx</code><br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://twitter.com/xxx</code>'));
 	$form->addInput($icons_data);
 
 	/* 项目推荐 */
-    $TheNotice = new Typecho_Widget_Helper_Form_Element_Text('TheNotice', NULL, NULL, _t('<h2>项目推荐 <small>Projects</small></h2>'));
-    $TheNotice->input->setAttribute('style', 'display:none');
-    $form->addInput($TheNotice);
+    $NoticeProject = new Typecho_Widget_Helper_Form_Element_Text('NoticeProject', NULL, NULL, _t('<h2>项目推荐 <small>Projects</small></h2>'));
+    $NoticeProject->input->setAttribute('style', 'display:none');
+    $form->addInput($NoticeProject);
     
 	$Projects = new Typecho_Widget_Helper_Form_Element_Radio(
         'Projects',
