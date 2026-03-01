@@ -68,6 +68,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                 </div>
              <?php endwhile; ?>
             </div>
+            <div style="margin-top: 1rem; text-align: right;">
+                <a href="/articles.html">View More &raquo;</a>
+            </div>
         </section>
         <?php if ($this->options->Projects): ?>
         <section>
