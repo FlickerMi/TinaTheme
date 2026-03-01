@@ -162,10 +162,10 @@ function spam_protection_pre($comment, $post) {
     return $comment;
 }
 
-    /**
-     * TinaTheme - ShortCode
-     * 短代码
-     */
+/**
+ * TinaTheme - ShortCode
+ * 短代码
+ */
 function getContentTest($content) {
     /* MARK功能 */
     $pattern = '/\[(mark)\](.*?)\[\s*\/\1\s*\]/';
@@ -190,20 +190,20 @@ function getContentTest($content) {
     /* 返回值 */
     return $content;
 }
-    /**
-     * TinaTheme - Words Count
-     * 字数统计
-     */
+/**
+ * TinaTheme - Words Count
+ * 字数统计
+ */
 function word_count($cid){
 	$db = Typecho_Db::get ();
 	$rs = $db->fetchRow($db->select('table.contents.text')->from('table.contents')->where('table.contents.cid=?',$cid)->order ('table.contents.cid',Typecho_Db::SORT_ASC)->limit (1));
 	return mb_strlen($rs['text'], 'UTF-8');
 }
-    /**
-     * TinaTheme - Next or Previous Post
-     * 上一篇文章、下一篇文章输出修订
-     * 为了在 a 标签的内容中同时兼容文章标题和其它内容所写
-     */
+/**
+ * TinaTheme - Next or Previous Post
+ * 上一篇文章、下一篇文章输出修订
+ * 为了在 a 标签的内容中同时兼容文章标题和其它内容所写
+ */
 function prev_post($archive) {
     $db = Typecho_Db::get();
     $content = $db->fetchRow($db->select()
@@ -259,10 +259,10 @@ function next_post($archive) {
         echo '';
     }
 }
-    /**
-     * TinaTheme - CDN Supports
-     * 换静态资源库
-     */
+/**
+ * TinaTheme - CDN Supports
+ * 换静态资源库
+ */
 function staticUrl($file = ''){
     $lists = explode("\r\n", Helper::options()->cjCDNlink);
     $cjCDNlinks = [
@@ -350,4 +350,49 @@ function staticUrl($file = ''){
         $which = Helper::options()->cjCDN;
     } else return '';
     return isset($links[$which]) ? '//' . $links[$which] : '';
+}
+/**
+ * TinaTheme - Hide Content
+ * 回复后可见
+ * 用法：在正文中使用 [hide]需要隐藏的内容[/hide]
+ */
+function getContentWithHide($content, $cid, $archive) {
+    // 检测正文中是否存在 [hide] 标签
+    if (strpos($content, '[hide]') !== false) {
+        $canView = false;
+        // 已登录用户直接可见
+        $currentUser = Typecho_Widget::widget('Widget_User');
+        if ($currentUser->hasLogin()) {
+            $canView = true;
+        } else {
+            // 查询当前访客邮箱是否已在该文章下评论过
+            $mail = $archive->remember('mail', true);
+            if (!empty($mail)) {
+                $db = Typecho_Db::get();
+                $sql = $db->select()->from('table.comments')
+                    ->where('cid = ?', $cid)
+                    ->where('mail = ?', $mail)
+                    ->where('status = ?', 'approved')
+                    ->limit(1);
+                $result = $db->fetchAll($sql);
+                if ($result) {
+                    $canView = true;
+                }
+            }
+        }
+        if ($canView) {
+            $content = preg_replace(
+                '/\[hide\](.*?)\[\/hide\]/sm',
+                '<div class="hide-content">$1</div>',
+                $content
+            );
+        } else {
+            $content = preg_replace(
+                '/\[hide\](.*?)\[\/hide\]/sm',
+                '<div class="reply-tip"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> 此处内容需要评论后方可阅读。</div>',
+                $content
+            );
+        }
+    }
+    return $content;
 }

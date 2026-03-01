@@ -67,12 +67,14 @@ echo $commentClass;
             <?php endif; ?>
     		<p>
                 <label for="textarea" class="required"><?php _e('内容'); ?></label>
-                <textarea rows="8" cols="50" name="text" id="comment" class="textarea" required ><?php $this->remember('text'); ?></textarea>
+                <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" required ><?php $this->remember('text'); ?></textarea>
             </p>
+            <p><?php Smilies_Plugin::output(); ?></p>
             <?php if ($this->options->TheVerification): ?>
             <p style="float:left">
                 <?php spam_protection_math();?>
             </p>
+            
             <?php endif; ?>
     		<p style="float:right">
                 <button type="reset" id="submit" class="submit"><?php _e('清空内容'); ?></button>
