@@ -106,7 +106,7 @@
     <?php if ($this->options->JqueryControl): ?>
     <script src="<?= staticUrl('jquery.min.js') ?>"></script>
     <?php endif; ?>
-    <script>$(document).on('pjax:complete',function(){hljs.initHighlightingOnLoad()});</script>
+    <script>$(document).on('pjax:complete',function(){if(typeof hljs !== 'undefined'){hljs.initHighlightingOnLoad()}});</script>
     <?php if ($this->options->fancybox): ?>
     <link href="<?= staticUrl('jquery.fancybox.min.css') ?>" rel="stylesheet">
     <script src="<?= staticUrl('jquery.fancybox.min.js') ?>"></script>
