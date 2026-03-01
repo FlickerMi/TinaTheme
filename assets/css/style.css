@@ -2064,3 +2064,8 @@ code::-webkit-scrollbar-thumb {
   background: var(--transparent-bg);
   border-color: rgba(255, 255, 255, 0.1);
 }
+
+/* p 内图片垂直居中对齐 */
+p img {
+  vertical-align: middle;
+}
