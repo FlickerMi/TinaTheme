@@ -80,6 +80,34 @@ $jsonld = array(
                 $processedContent = preg_replace($pattern, $replacement, $processedContent);
             }
 
+            // --- 广告插入逻辑 (Ads Injection) ---
+            
+            // 1. 自定义位置广告：在文章编辑器中任意位置插入 [ads] 占位符，会被替换为自定义字段 ads 的内容
+            if (isset($this->fields->ads) && !empty($this->fields->ads)) { 
+                $adsHtml = '<div class="post-ads custom-position" style="margin: 20px 0;">' . $this->fields->ads . '</div>';
+                // 替换所有的 [ads] 标签为广告逻辑
+                $processedContent = str_replace('[ads]', $adsHtml, $processedContent);
+            }
+
+            // 2. 自动插入广告：自定义字段为 ads_h2，如果设置了，会在每个 h2 区块的末尾（即下一个 h2 之前，以及正文末尾）插入广告
+            if (isset($this->fields->{'ads_h2'}) && !empty($this->fields->{'ads_h2'})) { 
+                $adsH2Html = '<div class="post-ads h2-position" style="margin: 20px 0;">' . $this->fields->{'ads_h2'} . '</div>';
+                
+                $segments = preg_split('/(<h2[^>]*>)/i', $processedContent, -1, PREG_SPLIT_DELIM_CAPTURE);
+                $segmentCount = count($segments);
+                
+                if ($segmentCount > 1) {
+                    // 从第一个 h2 之后的内容块开始遍历，为每一个段落的末尾(下个h2之前)追加广告
+                    for ($i = 2; $i < $segmentCount; $i += 2) {
+                        $segments[$i] .= $adsH2Html;
+                    }
+                    $processedContent = implode('', $segments);
+                } else {
+                    // 备用方案：如果没有 h2 标签，则将广告放在正文末尾
+                    $processedContent .= $adsH2Html;
+                }
+            }
+
             echo $processedContent;
             ?>
         </div>
