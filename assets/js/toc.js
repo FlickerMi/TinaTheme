@@ -107,13 +107,21 @@ window.initTOC = function () {
           // 让目录同时跟着滚动
           const listContainer = tocContainer.querySelector(".toc-list");
           if (listContainer) {
-            const linkTop = newLink.offsetTop;
+            const li = newLink.parentElement;
+            const linkTop = li.offsetTop;
+            const linkBottom = linkTop + li.offsetHeight;
+            const containerScrollTop = listContainer.scrollTop;
+            const containerHeight = listContainer.clientHeight;
+
             if (
-              linkTop < listContainer.scrollTop ||
-              linkTop > listContainer.scrollTop + listContainer.clientHeight
+              linkTop < containerScrollTop ||
+              linkBottom > containerScrollTop + containerHeight
             ) {
               listContainer.scrollTo({
-                top: Math.max(0, linkTop - 50),
+                top: Math.max(
+                  0,
+                  linkTop - containerHeight / 2 + li.offsetHeight / 2,
+                ),
                 behavior: "smooth",
               });
             }
