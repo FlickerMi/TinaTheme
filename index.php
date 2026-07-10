@@ -16,14 +16,26 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 <main>
     <div class="container">
         <section class="my">
-            <div class="content">
-                <p>
-                    <?php if ($this->options->Notice): ?>
-                        <?php $this->options->Notice() ?>
-                    <?php else: ?>
-                        <?php $this->options->description() ?>
+            <div class="author-identity">
+                <?php
+                $author_name = $this->options->IndexAuthorName ? $this->options->IndexAuthorName : $this->options->title;
+                $avatar_url  = $this->options->IndexAvatar ? $this->options->IndexAvatar : $this->options->favicon;
+                ?>
+                <?php if ($avatar_url): ?>
+                <img src="<?php echo htmlspecialchars($avatar_url); ?>" alt="<?php echo htmlspecialchars($author_name); ?>" class="author-avatar" width="64" height="64">
+                <?php endif; ?>
+                <div class="author-meta">
+                    <h1 class="author-name"><?php echo htmlspecialchars($author_name); ?></h1>
+                    <?php if ($this->options->description || $this->options->Notice): ?>
+                    <div class="author-tagline">
+                        <?php if ($this->options->Notice): ?>
+                            <?php $this->options->Notice() ?>
+                        <?php else: ?>
+                            <p><?php $this->options->description() ?></p>
+                        <?php endif; ?>
+                    </div>
                     <?php endif; ?>
-                </p>
+                </div>
             </div>
             <?php if ($this->options->Icons): ?>
             <div class="bio-social">
@@ -34,17 +46,32 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                     foreach ($icon_lines as $icon_line) {
                         $icon_line = trim($icon_line);
                         if (empty($icon_line)) continue;
-                        // 只在第一个 | 处分割（SVG 内部可能不含 |，但保险起见限制只分一次）
-                        $sep_pos = strpos($icon_line, ' | ');
-                        if ($sep_pos !== false) {
-                            $icon_svg = trim(substr($icon_line, 0, $sep_pos));
-                            $icon_url = trim(substr($icon_line, $sep_pos + 3));
-                        } else {
-                            $icon_svg = $icon_line;
-                            $icon_url = '#';
-                        }
+                        // 支持 SVG | URL | Label 三段格式，SVG 内部不含 " | "
+                        $icon_parts = array_pad(array_map('trim', explode(' | ', $icon_line, 3)), 3, '');
+                        $icon_svg = $icon_parts[0];
+                        $icon_url = $icon_parts[1] ? $icon_parts[1] : '#';
+                        $icon_label = $icon_parts[2];
                         if (empty($icon_url)) $icon_url = '#';
-                        echo '<a href="' . htmlspecialchars($icon_url) . '" target="_blank">' . $icon_svg . '</a>' . "\n";
+                        if (!empty($icon_label)) {
+                            // 使用自定义标签
+                        } elseif ($icon_url === '#') {
+                            $icon_label = _t('社交链接');
+                        } else {
+                            $parsed = parse_url($icon_url);
+                            if (!empty($parsed['host'])) {
+                                $icon_label = $parsed['host'];
+                                if (!empty($parsed['path']) && $parsed['path'] !== '/') {
+                                    $icon_label .= rtrim($parsed['path'], '/');
+                                }
+                            }
+                            if (empty($icon_label)) {
+                                $icon_label = _t('社交链接');
+                            }
+                        }
+                        if (stripos($icon_svg, 'aria-hidden') === false) {
+                            $icon_svg = preg_replace('/<svg\b/i', '<svg aria-hidden="true"', $icon_svg, 1);
+                        }
+                        echo '<a href="' . htmlspecialchars($icon_url) . '" aria-label="' . htmlspecialchars($icon_label) . '" target="_blank" rel="noopener noreferrer">' . $icon_svg . '</a>' . "\n";
                     }
                 }
                 ?>
@@ -55,26 +82,37 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
     </div>
     <div class="container">
         <section>
-            <h2>Latest Articles</h2>
-            <div class="post">
+            <h2><?php echo htmlspecialchars($this->options->IndexLatestTitle ? $this->options->IndexLatestTitle : _t('最新文章')); ?></h2>
+            <div class="posts">
+                <?php if ($this->have()): ?>
                 <?php while($this->next()): ?>
                 <div class="post">
                     <a href="<?php $this->permalink() ?>">
                     <div class="post-row">
-                        <time><?php $this->date('M j'); ?></time>
+                        <time datetime="<?php $this->date('c'); ?>"><?php $this->date('n月j日'); ?></time>
                         <h3><?php $this->title() ?></h3>
                     </div>
                     </a>
                 </div>
              <?php endwhile; ?>
+             <?php else: ?>
+                <div class="empty-state"><p><?php _e('暂无文章，稍后再来。'); ?></p></div>
+             <?php endif; ?>
             </div>
-            <div style="margin-top: 1rem; text-align: right;">
-                <a href="/articles.html">View More &raquo;</a>
+            <div class="view-more">
+                <?php
+                $archive_url = $this->options->IndexArchiveUrl ? $this->options->IndexArchiveUrl : '/articles.html';
+                $archive_url = trim($archive_url);
+                if (stripos($archive_url, 'http') !== 0) {
+                    $archive_url = rtrim($this->options->siteUrl, '/') . '/' . ltrim($archive_url, '/');
+                }
+                ?>
+                <a href="<?php echo htmlspecialchars($archive_url); ?>"><?php echo htmlspecialchars($this->options->IndexViewMore ? $this->options->IndexViewMore : _t('查看更多')); ?> &raquo;</a>
             </div>
         </section>
         <?php if ($this->options->Projects): ?>
         <section>
-            <h2>Projects</h2>
+            <h2><?php echo htmlspecialchars($this->options->IndexProjectsTitle ? $this->options->IndexProjectsTitle : _t('项目')); ?></h2>
             <div class="projects">
             <?php
             $projects_raw = $this->options->projects_data;
@@ -89,22 +127,18 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
                     ?>
                 <div class="project">
                     <div>
-                        <a href="<?php echo htmlspecialchars($p_url); ?>" target="_blank" rel="noreferrer">
+                        <div class="project-title">
                         <?php if ($p_icon): ?>
-                            <div class="icon"><img src="<?php echo htmlspecialchars($p_icon); ?>" height="30px" width="30px"></div>
-                        <?php else: ?>
-                            <div class="icon"></div>
+                            <div class="icon"><img src="<?php echo htmlspecialchars($p_icon); ?>" height="30" width="30" alt=""></div>
                         <?php endif; ?>
-                        <h3><?php echo $p_name ? htmlspecialchars($p_name) : 'Project'; ?></h3>
-                        </a>
+                        <h3><?php echo $p_name ? htmlspecialchars($p_name) : _t('未命名项目'); ?></h3>
+                        </div>
                     <?php if ($p_desc): ?>
                         <div class="description"><?php echo htmlspecialchars($p_desc); ?></div>
-                    <?php else: ?>
-                        <div class="description"></div>
                     <?php endif; ?>
                     </div>
                     <div class="flex">
-                        <a href="<?php echo htmlspecialchars($p_url); ?>" class="button" target="_blank" rel="noreferrer">Source</a>
+                        <a href="<?php echo htmlspecialchars($p_url); ?>" class="button" target="_blank" rel="noreferrer"><?php echo htmlspecialchars($this->options->ProjectButtonText ? $this->options->ProjectButtonText : _t('访问')); ?></a>
                     </div>
                 </div>
                     <?php

@@ -39,7 +39,28 @@ function themeConfig($form) {
     
     $FooterHTML = new Typecho_Widget_Helper_Form_Element_Textarea('FooterHTML', NULL, NULL, _t('自定义页脚内容'), _t('支持HTML语法。不填则代表为空。'));
     $form->addInput($FooterHTML);
-    
+
+    $IndexLatestTitle = new Typecho_Widget_Helper_Form_Element_Text('IndexLatestTitle', NULL, _t('最新文章'), _t('首页文章列表标题'), _t('显示在首页文章列表上方的标题，默认为“最新文章”。'));
+    $form->addInput($IndexLatestTitle);
+
+    $IndexProjectsTitle = new Typecho_Widget_Helper_Form_Element_Text('IndexProjectsTitle', NULL, _t('项目'), _t('首页项目推荐标题'), _t('显示在首页项目推荐列表上方的标题，默认为“项目”。'));
+    $form->addInput($IndexProjectsTitle);
+
+    $IndexViewMore = new Typecho_Widget_Helper_Form_Element_Text('IndexViewMore', NULL, _t('查看更多'), _t('首页“查看更多”文案'), _t('首页文章列表底部“查看更多”链接的文案，默认为“查看更多”。'));
+    $form->addInput($IndexViewMore);
+
+    $IndexArchiveUrl = new Typecho_Widget_Helper_Form_Element_Text('IndexArchiveUrl', NULL, '/articles.html', _t('首页归档页链接'), _t('首页文章列表底部“查看更多”链接指向的归档页地址，默认为 /articles.html。支持相对路径或完整 http(s) 链接。'));
+    $form->addInput($IndexArchiveUrl);
+
+    $ProjectButtonText = new Typecho_Widget_Helper_Form_Element_Text('ProjectButtonText', NULL, _t('访问'), _t('项目卡片按钮文案'), _t('项目推荐卡片中按钮的文案，默认为“访问”。'));
+    $form->addInput($ProjectButtonText);
+
+    $IndexAuthorName = new Typecho_Widget_Helper_Form_Element_Text('IndexAuthorName', NULL, NULL, _t('首页作者名'), _t('首页作者身份区显示的名字，留空则使用站点标题。'));
+    $form->addInput($IndexAuthorName);
+
+    $IndexAvatar = new Typecho_Widget_Helper_Form_Element_Text('IndexAvatar', NULL, NULL, _t('首页作者头像'), _t('首页作者身份区显示的头像 URL，留空则使用站点 Favicon。建议尺寸 128×128 以上，正方形。'));
+    $form->addInput($IndexAvatar);
+
     /* 速度优化 */
     $NoticeSpeed = new Typecho_Widget_Helper_Form_Element_Text('NoticeSpeed', NULL, NULL, _t('<h2>速度优化</h2>'));
     $NoticeSpeed->input->setAttribute('style', 'display:none');
@@ -232,7 +253,7 @@ function themeConfig($form) {
     );
     $form->addInput($Icons);
 
-	$icons_data = new Typecho_Widget_Helper_Form_Element_Textarea('icons_data', NULL, '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github-icon lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> | https://github.com/FlickerMi', _t('图标列表'), _t('每行一个图标，格式：<code>SVG代码 | 链接URL</code>。SVG 推荐大小 25x25，链接留空可填 <code>#</code>。示例：<br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://github.com/xxx</code><br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://twitter.com/xxx</code>'));
+	$icons_data = new Typecho_Widget_Helper_Form_Element_Textarea('icons_data', NULL, '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-github-icon lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> | https://github.com/FlickerMi', _t('图标列表'), _t('每行一个图标，格式：<code>SVG代码 | 链接URL</code>，也可选填标签：<code>SVG代码 | 链接URL | 标签</code>。SVG 推荐大小 25x25，链接留空可填 <code>#</code>。示例：<br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://github.com/xxx</code><br><code>&lt;svg ...&gt;...&lt;/svg&gt; | https://twitter.com/xxx | Twitter</code>'));
 	$form->addInput($icons_data);
 
 	/* 项目推荐 */
